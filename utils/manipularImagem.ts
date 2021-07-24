@@ -32,6 +32,7 @@ import {PNG} from "pngjs";
 //}
 
 export type Pixel = number
+export type Histograma = number[]
 
 /**
  * Insere uma matriz de pixels em níveis de cinza em um objeto PNG
@@ -71,6 +72,23 @@ export const gerarMatriz = (imagem: PNG): Pixel[][] => {
     }
   }
   return pixels
+}
+
+/*
+ * Percorre a matriz passando o valor, linha e coluna para uma função de callback
+ */
+export const percorrerMatriz = (
+  matriz: Pixel[][], fn: (valor: number, linha: number, coluna: number) => void) => {
+  for (let linha = 0; linha < matriz.length; linha++)
+    for (let coluna = 0; coluna < matriz[linha].length; coluna++)
+      fn(matriz[linha][coluna], linha, coluna)
+}
+
+
+export const gerarHistograma = (matriz: Pixel[][]): Histograma => {
+  const histograma: Histograma = Array(256).fill(0)
+  percorrerMatriz(matriz, valor => histograma[valor] += 1)
+  return histograma
 }
 
 export const carregar = (caminhoImg: string): Promise<PNG> =>
