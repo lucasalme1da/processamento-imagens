@@ -1,5 +1,77 @@
 import fs from "fs";
-import { PNG } from "pngjs";
+import {PNG} from "pngjs";
+
+// IMAGENS COLORIDAS
+// export interface Pixel {
+//   vermelho: number
+//   verde: number
+//   azul: number
+//   opacidade: number
+// }
+
+//export const gerarMatriz = (imagem: PNG): Pixel[][] => {
+//  const pixels: Pixel[][] = []
+//  const tamanhoImagemBytes = imagem.width * imagem.height * 4
+//  let contadorFimDeLinha = 0
+//  let pixelsDaLinha: Pixel[] = []
+//  //Cada pixel tem 4 bytes
+//  for (let offset = 0; offset < tamanhoImagemBytes; offset += 4) {
+//    const vermelho = imagem.data.readUInt8(offset)
+//    const verde = imagem.data.readUInt8(offset + 1)
+//    const azul = imagem.data.readUInt8(offset + 2)
+//    const opacidade = imagem.data.readUInt8(offset + 3)
+//    pixelsDaLinha.push({vermelho, verde, azul, opacidade})
+//    contadorFimDeLinha++
+//    if (contadorFimDeLinha >= imagem.width) {
+//      contadorFimDeLinha = 0
+//      pixels.push([...pixelsDaLinha])
+//      pixelsDaLinha = []
+//    }
+//  }
+//  return pixels
+//}
+
+export type Pixel = number
+
+/**
+ * Insere uma matriz de pixels em níveis de cinza em um objeto PNG
+*/
+export const inserirMatriz = (matriz: Pixel[][], imagem: PNG) => {
+  let offset = 0
+  for (let linha = 0; linha < matriz.length; linha++)
+    for (let coluna = 0; coluna < matriz[linha].length; coluna++) {
+      const pixel = matriz[linha][coluna]
+      //R = G = B para níveis de cinza
+      imagem.data[offset] = pixel
+      imagem.data[offset + 1] = pixel
+      imagem.data[offset + 2] = pixel
+      imagem.data[offset + 3] = 255
+      offset += 4
+    }
+}
+/**
+ * Retorna uma matriz de pixels no formato matriz[linha][coluna]
+ * Cada pixel é um nível de intensidade em 8bits
+ * Somente para imagens em níveis de cinza
+*/
+export const gerarMatriz = (imagem: PNG): Pixel[][] => {
+  const pixels: Pixel[][] = []
+  const tamanhoImagemBytes = imagem.width * imagem.height * 4
+  let contadorFimDeLinha = 0
+  let pixelsDaLinha: Pixel[] = []
+  //Cada pixel tem 4 bytes
+  for (let offset = 0; offset < tamanhoImagemBytes; offset += 4) {
+    const pixel = imagem.data.readUInt8(offset)
+    pixelsDaLinha.push(pixel)
+    contadorFimDeLinha++
+    if (contadorFimDeLinha >= imagem.width) {
+      contadorFimDeLinha = 0
+      pixels.push([...pixelsDaLinha])
+      pixelsDaLinha = []
+    }
+  }
+  return pixels
+}
 
 export const carregar = (caminhoImg: string): Promise<PNG> =>
   new Promise((resolve) => {
@@ -9,7 +81,7 @@ export const carregar = (caminhoImg: string): Promise<PNG> =>
       console.error(erro);
       process.exit(1);
     });
-    const png = arquivo.pipe(new PNG());
+    const png = arquivo.pipe(new PNG({colorType: 0}));
     png.on("parsed", function () {
       console.log("Imagem carregada com sucesso");
       resolve(this);
