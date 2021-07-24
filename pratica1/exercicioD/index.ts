@@ -1,53 +1,39 @@
-import { PNG } from "pngjs";
-import { carregar, salvar } from "../../utils/manipularImagem";
+import {PNG} from "pngjs";
+import {carregar, salvar, percorrerMatriz, Histograma, gerarMatriz, inserirMatriz, gerarHistograma} from "../../utils/manipularImagem";
 
+const gmin = 0
+const gmax = 255
+const acharFmin = (histograma: Histograma): number => {
+  for (let intensidade = 0; intensidade < histograma.length; intensidade++)
+    if (histograma[intensidade] !== 0) return intensidade
+  return 0
+}
+const acharFmax = (histograma: Histograma): number => {
+  for (let intensidade = histograma.length - 1; intensidade >= 0; intensidade--)
+    if (histograma[intensidade] !== 0) return intensidade
+  return 0
+}
 /**
- * Generates a new `Query` object ordered by key.
- *
- * Sorts the results of a query by their (ascending) key values.
- *
- * You can read more about `orderByKey()` in
- * {@link
- *  https://firebase.google.com/docs/database/web/lists-of-data#sort_data
- *  Sort data}.
- *
- * @example
- * ```javascript
- * var ref = firebase.database().ref("dinosaurs");
- * ref.orderByKey().on("child_added", function(snapshot) {
- *   console.log(snapshot.key);
- * });
- * ```
+ * Realiza um ajuste de contraste estendendo o histograma para todo
+ * o intervalo disponível
  */
-const inverterValores = (matriz: PNG): PNG => {
-  return matriz;
+const ajusteDeContraste = (imagem: PNG) => {
+  const matriz = gerarMatriz(imagem)
+  const histograma = gerarHistograma(matriz)
+  const fmax = acharFmax(histograma)
+  const fmin = acharFmin(histograma)
+  percorrerMatriz(matriz, (valor, linha, coluna) => {
+    matriz[linha][coluna] = Math.round((((gmax - gmin) / (fmax - fmin)) * (valor - fmin))
+      + gmin)
+  })
+
+  inserirMatriz(matriz, imagem)
 };
 
 const exercicioD = async (caminho: string) => {
-  // carregar png
-  // inverter os valores
-  // salvar png
-
-  // Exemplo
-
-  // carrega a img png
-  const img = await carregar(caminho);
-
-  // manipula a imagem
-  for (var y = 0; y < img.height; y++) {
-    for (var x = 0; x < img.width; x++) {
-      var idx = (img.width * y + x) << 2;
-      // invert color
-      img.data[idx] = 255 - img.data[idx];
-      img.data[idx + 1] = 255 - img.data[idx + 1];
-      img.data[idx + 2] = 255 - img.data[idx + 2];
-      // and reduce opacity
-      img.data[idx + 3] = img.data[idx + 3] >> 1;
-    }
-  }
-
-  // salvar a imagem
-  await salvar(img);
+  const imagem = await carregar(caminho);
+  ajusteDeContraste(imagem)
+  await salvar(imagem);
 };
 
 export default exercicioD;
