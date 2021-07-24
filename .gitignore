@@ -1,0 +1,8 @@
+# pasta node_modules e outras configuracoes
+package-lock.json
+node_modules
+
+# build e imagem de entrada e saida
+build
+assets
+resultado.png

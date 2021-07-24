@@ -1,0 +1,31 @@
+{
+  "name": "processamento-imagens",
+  "version": "1.0.0",
+  "description": "Repositório para a disciplina de processamentos de imagens, optativa do curso de Engenharia de Computação da UTFPR-CP.",
+  "main": "index.js",
+  "dependencies": {
+    "pngjs": "^6.0.0",
+    "typescript": "^4.3.5"
+  },
+  "devDependencies": {
+    "@types/node": "^16.4.1",
+    "@types/pngjs": "^6.0.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "tsc && node build/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lucasalme1da/processamento-imagens.git"
+  },
+  "author": "Lucas Almeida <lucasdealmeida.ss@gmail.com> (https://github.com/lucasalme1da)",
+  "contributors": [
+    "Thiago Angelo <thiiaagoangelo@gmail.com> (https://github.com/Taiguz)"
+  ],
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lucasalme1da/processamento-imagens/issues"
+  },
+  "homepage": "https://github.com/lucasalme1da/processamento-imagens#readme"
+}
