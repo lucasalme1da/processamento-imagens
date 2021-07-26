@@ -23,7 +23,7 @@ const inverterValores = (matriz: PNG): PNG => {
   return matriz;
 };
 
-const exercicioA = async (caminho: string) => {
+const exercicioA = async (caminho: string, tamanhoDaMascara: number) => {
   // carregar png
   // inverter os valores
   // salvar png

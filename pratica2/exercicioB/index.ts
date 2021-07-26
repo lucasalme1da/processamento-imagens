@@ -80,12 +80,12 @@ const aplicarFiltragemMedia = (imagem: PNG, tamanhoDaMascara: number): PNG => {
   return imagem;
 };
 
-const exercicioB = async (caminho: string) => {
+const exercicioB = async (caminho: string, tamanhoDaMascara: number) => {
   // carregar a imagem png
   const imagem = await carregar(caminho);
 
   // manipular a imagem
-  aplicarFiltragemMedia(imagem, 11);
+  aplicarFiltragemMedia(imagem, tamanhoDaMascara);
 
   // salvar a imagem
   await salvar(imagem);

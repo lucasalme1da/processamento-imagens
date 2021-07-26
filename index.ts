@@ -44,6 +44,17 @@ if (caminho.flag === -1) {
 
 caminho.valor = process.argv[caminho.flag + 1];
 
+const tamanhoDaMascara: Argumentos = {
+  flag: process.argv.findIndex((arg) => arg === "-m"),
+};
+
+if (tamanhoDaMascara.flag === -1) {
+  console.error('Argumento tamanho da máscara "-m" não especificado!');
+  process.exit(1);
+}
+
+tamanhoDaMascara.valor = process.argv[tamanhoDaMascara.flag + 1];
+
 const praticaEscolhida: escolha = { pratica: pratica.PRATICA_2 };
 
 switch (praticaEscolhida.pratica) {
@@ -66,16 +77,16 @@ switch (praticaEscolhida.pratica) {
   case pratica.PRATICA_2:
     switch (operacao.valor) {
       case operacoes.exercicioA:
-        pratica2.exercicioA(caminho.valor);
+        pratica2.exercicioA(caminho.valor, parseInt(tamanhoDaMascara.valor));
         break;
       case operacoes.exercicioB:
-        pratica2.exercicioB(caminho.valor);
+        pratica2.exercicioB(caminho.valor, parseInt(tamanhoDaMascara.valor));
         break;
       case operacoes.exercicioC:
-        pratica2.exercicioC(caminho.valor);
+        pratica2.exercicioC(caminho.valor, parseInt(tamanhoDaMascara.valor));
         break;
       case operacoes.exercicioD:
-        pratica2.exercicioD(caminho.valor);
+        pratica2.exercicioD(caminho.valor, parseInt(tamanhoDaMascara.valor));
         break;
     }
     break;

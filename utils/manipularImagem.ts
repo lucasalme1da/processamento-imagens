@@ -126,6 +126,39 @@ export const gerarMascaraPassaBaixa = (
   return Array.from({ length: tamanhoDaMascara }, () => linhaDaMascara);
 };
 
+export const gerarTrianguloDePascal = (n: number): number[][] => {
+  let i = 0;
+  let triangulo: number[][] = [[1]];
+
+  // Percorre um for em formato de triangulo (cada iteração aumenta o limite de i com base no número passado por parâmetro)
+  for (i = 1; i < n; i++) {
+    triangulo.push(Array.from({ length: 2 }, () => 1));
+    if (i >= 2)
+      triangulo[i].splice(
+        1,
+        0,
+        ...Array.from(
+          { length: i - 1 },
+          (_, k) => triangulo[i - 1][k + 1] + triangulo[i - 1][k]
+        )
+      );
+  }
+  return triangulo;
+};
+
+export const gerarMascaraGaussiana = (tamanhoDaMascara: number): number[][] => {
+  let nTriangulo =
+    gerarTrianguloDePascal(tamanhoDaMascara)[tamanhoDaMascara - 1];
+
+  let kTriangulo = nTriangulo.map((v) => [v]);
+
+  let mascara: number[][] = kTriangulo.map((linha) =>
+    nTriangulo.map((v) => v * linha[0])
+  );
+
+  return mascara;
+};
+
 /**
  * Convoluciona duas matrizes e devolve o resultado dividido pelo fator de normalização
  *
