@@ -44,7 +44,7 @@ if (caminho.flag === -1) {
 
 caminho.valor = process.argv[caminho.flag + 1];
 
-const praticaEscolhida: escolha = { pratica: pratica.PRATICA_1 };
+const praticaEscolhida: escolha = { pratica: pratica.PRATICA_2 };
 
 switch (praticaEscolhida.pratica) {
   case pratica.PRATICA_1:
