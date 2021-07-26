@@ -1,53 +1,49 @@
 import { PNG } from "pngjs";
-import { carregar, salvar } from "../../utils/manipularImagem";
+import {
+  carregar,
+  salvar,
+  gerarMatriz,
+  inserirMatriz,
+} from "../../utils/manipularImagem";
 
 /**
- * Generates a new `Query` object ordered by key.
+ * Inverte os valores das linhas pares com as linhas ímpares de uma imagem em escala de cinza.
  *
- * Sorts the results of a query by their (ascending) key values.
+ * @param imagem Uma imagem em escala de cinza do tipo PNG
  *
- * You can read more about `orderByKey()` in
- * {@link
- *  https://firebase.google.com/docs/database/web/lists-of-data#sort_data
- *  Sort data}.
+ * @returns Uma imagem com as linhas pares e ímpares invertidas do tipo PNG
  *
- * @example
- * ```javascript
- * var ref = firebase.database().ref("dinosaurs");
- * ref.orderByKey().on("child_added", function(snapshot) {
- *   console.log(snapshot.key);
- * });
- * ```
  */
-const inverterValores = (matriz: PNG): PNG => {
-  return matriz;
+const inverterLinhas = (imagem: PNG): PNG => {
+  // Carregando a imagem em formato de matriz
+  let matriz = gerarMatriz(imagem);
+
+  // Para inverter os valores das linhas pares com as impares, basta percorrer todas as linhas e, quando forem pares, trocar com as impares
+  matriz = matriz.map((linha, index) => {
+    if (index % 2 === 0) {
+      const proximaLinha = matriz[index + 1];
+      matriz[index + 1] = linha;
+      return proximaLinha;
+    }
+    return linha;
+  });
+
+  // Percorrendo cada item da matriz (cada pixel) e inserindo-o no canal correspondente
+  inserirMatriz(matriz, imagem);
+
+  // Retornando imagem invertida
+  return imagem;
 };
 
 const exercicioC = async (caminho: string) => {
-  // carregar png
-  // inverter os valores
-  // salvar png
-
-  // Exemplo
-
   // carrega a img png
-  const img = await carregar(caminho);
+  let imagem = await carregar(caminho);
 
-  // manipula a imagem
-  for (var y = 0; y < img.height; y++) {
-    for (var x = 0; x < img.width; x++) {
-      var idx = (img.width * y + x) << 2;
-      // invert color
-      img.data[idx] = 255 - img.data[idx];
-      img.data[idx + 1] = 255 - img.data[idx + 1];
-      img.data[idx + 2] = 255 - img.data[idx + 2];
-      // and reduce opacity
-      img.data[idx + 3] = img.data[idx + 3] >> 1;
-    }
-  }
+  // inverte os valores das linhas pares com impares
+  imagem = inverterLinhas(imagem);
 
   // salvar a imagem
-  await salvar(img);
+  await salvar(imagem);
 };
 
 export default exercicioC;

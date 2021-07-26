@@ -1,54 +1,42 @@
 import { PNG } from "pngjs";
-import { carregar, salvar } from "../../utils/manipularImagem";
+import {
+  carregar,
+  salvar,
+  gerarMatriz,
+  inserirMatriz,
+} from "../../utils/manipularImagem";
 
 /**
- * Generates a new `Query` object ordered by key.
+ * Inverte os valores dos pixels de uma imagem em escala de cinza.
  *
- * Sorts the results of a query by their (ascending) key values.
+ * @param imagem Uma imagem em escala de cinza do tipo PNG
  *
- * You can read more about `orderByKey()` in
- * {@link
- *  https://firebase.google.com/docs/database/web/lists-of-data#sort_data
- *  Sort data}.
+ * @returns Uma imagem invertida (também chamada de negativa) do tipo PNG
  *
- * @example
- * ```javascript
- * var ref = firebase.database().ref("dinosaurs");
- * ref.orderByKey().on("child_added", function(snapshot) {
- *   console.log(snapshot.key);
- * });
- * ```
  */
-const inverterValores = (matriz: PNG): PNG => {
-  return matriz;
+const inverterValores = (imagem: PNG): PNG => {
+  // Carregando a imagem em formato de matriz
+  let matriz = gerarMatriz(imagem);
+
+  // Para inverter os valores, basta percorrer todas as posições e subtrair o valor maximo (255) do valor original e substituí-lo
+  matriz = matriz.map((linha) => linha.map((pixel) => 255 - pixel));
+
+  // Percorrendo cada item da matriz (cada pixel) e inserindo-o no canal correspondente
+  inserirMatriz(matriz, imagem);
+
+  // Retornando imagem invertida
+  return imagem;
 };
 
 const exercicioA = async (caminho: string) => {
-  // carregar png
-  // inverter os valores
-  // salvar png
-
-  // Exemplo
-
   // carrega a img png
-  const img = await carregar(caminho);
+  let imagem = await carregar(caminho);
 
-  // manipula a imagem
-  console.log("Aplicando manipulações na imagem");
-  for (var y = 0; y < img.height; y++) {
-    for (var x = 0; x < img.width; x++) {
-      var idx = (img.width * y + x) << 2;
-      // invert color
-      img.data[idx] = 255 - img.data[idx];
-      img.data[idx + 1] = 255 - img.data[idx + 1];
-      img.data[idx + 2] = 255 - img.data[idx + 2];
-      // and reduce opacity
-      img.data[idx + 3] = img.data[idx + 3] >> 1;
-    }
-  }
+  // inverte os valores dos pixels
+  imagem = inverterValores(imagem);
 
   // salvar a imagem
-  await salvar(img);
+  await salvar(imagem);
 };
 
 export default exercicioA;
