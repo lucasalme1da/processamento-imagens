@@ -33,6 +33,7 @@ import {PNG} from "pngjs";
 
 export type Pixel = number
 export type Histograma = number[]
+const niveisDeIntensidade = 256
 
 /**
  * Insere uma matriz de pixels em níveis de cinza em um objeto PNG
@@ -86,8 +87,25 @@ export const percorrerMatriz = (
 
 
 export const gerarHistograma = (matriz: Pixel[][]): Histograma => {
-  const histograma: Histograma = Array(256).fill(0)
+  const histograma: Histograma = Array(niveisDeIntensidade).fill(0)
   percorrerMatriz(matriz, valor => histograma[valor] += 1)
+  return histograma
+}
+
+export const normalizarHistograma = (histograma: Histograma): Histograma => {
+  let somatorioPixels = 0
+  histograma.forEach(intensidade => somatorioPixels += intensidade)
+  histograma = histograma.map(intensidade => intensidade / somatorioPixels)
+  return histograma
+}
+
+export const acumularHistograma = (histograma: Histograma): Histograma => {
+  let somatorio = 0
+  histograma = histograma.map(intensidade => {
+    const novaItensidade = intensidade + somatorio
+    somatorio += intensidade
+    return Math.round(novaItensidade * niveisDeIntensidade)
+  })
   return histograma
 }
 
