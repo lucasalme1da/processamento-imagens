@@ -1,6 +1,10 @@
 import * as pratica1 from "./pratica1";
 import * as pratica2 from "./pratica2";
 
+import dotenv from "dotenv";
+
+dotenv.config();
+
 interface Argumentos {
   flag: number;
   valor?: string;
@@ -48,14 +52,10 @@ const tamanhoDaMascara: Argumentos = {
   flag: process.argv.findIndex((arg) => arg === "-m"),
 };
 
-if (tamanhoDaMascara.flag === -1) {
-  console.error('Argumento tamanho da máscara "-m" não especificado!');
-  process.exit(1);
-}
+tamanhoDaMascara.valor =
+  tamanhoDaMascara.flag !== -1 ? process.argv[tamanhoDaMascara.flag + 1] : "3";
 
-tamanhoDaMascara.valor = process.argv[tamanhoDaMascara.flag + 1];
-
-const praticaEscolhida: escolha = { pratica: pratica.PRATICA_2 };
+const praticaEscolhida: escolha = { pratica: process.env.PRATICA as pratica };
 
 switch (praticaEscolhida.pratica) {
   case pratica.PRATICA_1:
@@ -77,7 +77,7 @@ switch (praticaEscolhida.pratica) {
   case pratica.PRATICA_2:
     switch (operacao.valor) {
       case operacoes.exercicioA:
-        pratica2.exercicioA(caminho.valor, parseInt(tamanhoDaMascara.valor));
+        pratica2.exercicioA(caminho.valor);
         break;
       case operacoes.exercicioB:
         pratica2.exercicioB(caminho.valor, parseInt(tamanhoDaMascara.valor));
