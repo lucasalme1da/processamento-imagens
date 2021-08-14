@@ -9,8 +9,8 @@ const equalizacaoHistograma = (imagem: PNG) => {
   const histogramaAcumulado = acumularHistograma(normalizarHistograma(gerarHistograma(matriz)))
   percorrerMatriz(matriz, (valor, linha, coluna) => matriz[linha][coluna] = histogramaAcumulado[valor])
   inserirMatriz(matriz, imagem)
-
 }
+
 const exercicioA = async (caminho: string) => {
   const imagem = await carregar(caminho);
   equalizacaoHistograma(imagem)
