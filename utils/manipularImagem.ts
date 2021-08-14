@@ -31,8 +31,9 @@ import { PNG } from "pngjs";
 //  return pixels
 //}
 
-export type Pixel = number;
-export type Histograma = number[];
+export type Pixel = number
+export type Histograma = number[]
+const niveisDeIntensidade = 256
 
 /**
  * Insere uma matriz de pixels em níveis de cinza em um objeto PNG
@@ -50,6 +51,7 @@ export const inserirMatriz = (matriz: Pixel[][], imagem: PNG) => {
       offset += 4;
     }
 };
+
 /**
  * Retorna uma matriz de pixels no formato matriz[linha][coluna]
  * Cada pixel é um nível de intensidade em 8bits
@@ -86,11 +88,6 @@ export const percorrerMatriz = (
       fn(matriz[linha][coluna], linha, coluna);
 };
 
-export const gerarHistograma = (matriz: Pixel[][]): Histograma => {
-  const histograma: Histograma = Array(256).fill(0);
-  percorrerMatriz(matriz, (valor) => (histograma[valor] += 1));
-  return histograma;
-};
 
 /**
  * Gera uma máscara passa baixa
@@ -291,6 +288,30 @@ export const desenmoldurar = (
 
   return matriz;
 };
+
+
+export const gerarHistograma = (matriz: Pixel[][]): Histograma => {
+  const histograma: Histograma = Array(niveisDeIntensidade).fill(0)
+  percorrerMatriz(matriz, valor => histograma[valor] += 1)
+  return histograma
+}
+
+export const normalizarHistograma = (histograma: Histograma): Histograma => {
+  let somatorioPixels = 0
+  histograma.forEach(intensidade => somatorioPixels += intensidade)
+  histograma = histograma.map(intensidade => intensidade / somatorioPixels)
+  return histograma
+}
+
+export const acumularHistograma = (histograma: Histograma): Histograma => {
+  let somatorio = 0
+  histograma = histograma.map(intensidade => {
+    const novaItensidade = intensidade + somatorio
+    somatorio += intensidade
+    return Math.round(novaItensidade * niveisDeIntensidade)
+  })
+  return histograma
+}
 
 export const carregar = (caminhoImg: string): Promise<PNG> =>
   new Promise((resolve) => {
